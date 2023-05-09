@@ -4,6 +4,7 @@ import LoginDialog from './login/LoginDialog';
 import {useState , useContext} from 'react';
 import { DataContext } from '../context/DataProvider';
 import Profile from './Header/Profile';
+import { useSelector } from 'react-redux';
 
 const Wrapper = styled(Box)(({ theme }) => ({
     margin: '0 3% 0 auto',
@@ -52,6 +53,8 @@ const CustomButtons = () =>{
     const openDialog = () => {
         setOpen(true);
     }
+    const cartDetails = useSelector(state => state.cart);
+    const { cartItems } = cartDetails;
     return (
         <Wrapper>
             {
@@ -61,7 +64,9 @@ const CustomButtons = () =>{
             <Typography style={{ marginTop: 3, width: 135 }}>Become a Seller</Typography>
             <Typography style={{ marginTop: 3 }}>More</Typography>
         <Container>
-            <ShoppingCart/>
+        <Badge badgeContent={cartItems?.length} color="secondary">
+                    <ShoppingCart />
+            </Badge>
         <Typography style={{ marginLeft: 10 }}>Cart</Typography>
         </Container>
         <LoginDialog open={open} setOpen={setOpen}/>

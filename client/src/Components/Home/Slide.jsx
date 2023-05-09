@@ -1,6 +1,7 @@
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { Button, Divider, Box, Typography, styled } from "@mui/material";
+import { Link } from "react-router-dom";
 import Countdown from "react-countdown";
 
 const responsive = {
@@ -90,6 +91,7 @@ const Slide = ({ products, title, timer }) => {
         itemClass="carousel-item-padding-40-px"
       >
         {products.map((product) => (
+          <Link to={`product/${product.id}`} style={{textDecoration:'none'}}>
           <Box textAligh="center" style={{ padding: "25px 15px" }}>
             <Image src={product.url} alt="product" />
             <Text style={{ fontWeight: 600, color: "#212121" }}>
@@ -100,6 +102,7 @@ const Slide = ({ products, title, timer }) => {
               {product.tagline}
             </Text>
           </Box>
+          </Link>
         ))}
       </Carousel>
     </Component>
