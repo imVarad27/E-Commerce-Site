@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
 
 import {
   Dialog,
@@ -9,7 +9,7 @@ import {
   Typography,
   styled,
 } from "@mui/material";
-
+import { DataContext } from "../../context/DataProvider";
 import { authenticateLogin, authenticateSignup } from "../../service/api.js";
 
 const Component = styled(DialogContent)`
@@ -113,15 +113,13 @@ const accountInitialValues = {
   },
 };
 
-const LoginDialog = ({ open, setOpen, setAccount }) => {
+const LoginDialog = ({ open, setOpen }) => {
   const [login, setLogin] = useState(loginInitialValues);
   const [signup, setSignup] = useState(signupInitialValues);
-  const [error, showError] = useState(false);
+  const [error, setError] = useState(false);
   const [account, toggleAccount] = useState(accountInitialValues.login);
+  const { setAccount } = useContext(DataContext);
 
-  useEffect(() => {
-    showError(false);
-  }, [login]);
 
   const onValueChange = (e) => {
     setLogin({ ...login, [e.target.name]: e.target.value });
@@ -129,14 +127,16 @@ const LoginDialog = ({ open, setOpen, setAccount }) => {
 
   const onInputChange = (e) => {
     setSignup({ ...signup, [e.target.name]: e.target.value });
+    console.log(signup);
   };
 
   const loginUser = async () => {
     let response = await authenticateLogin(login);
-    if (!response) showError(true);
-    else {
-      showError(false);
+    if (response.status === 200){
       handleClose();
+      setAccount(response.data.data.firstname);
+    }else{
+      setError(true);
     }
   };
 
@@ -144,6 +144,7 @@ const LoginDialog = ({ open, setOpen, setAccount }) => {
     let response = await authenticateSignup(signup);
     if (!response) return;
     handleClose();
+    setAccount(signup.firstname);
   };
 
   const toggleSignup = () => {
@@ -153,6 +154,7 @@ const LoginDialog = ({ open, setOpen, setAccount }) => {
   const handleClose = () => {
     setOpen(false);
     toggleAccount(accountInitialValues.login);
+    setError(false);
   };
 
   return (
@@ -175,7 +177,7 @@ const LoginDialog = ({ open, setOpen, setAccount }) => {
                 variant="standard"
                 onChange={(e) => onValueChange(e)}
                 name="username"
-                label="Enter Email/Mobile number"
+                label="Enter Username"
               />
               {error && (
                 <Error>Please enter valid Email ID/Mobile number</Error>
